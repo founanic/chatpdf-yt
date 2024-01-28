@@ -5,14 +5,14 @@ import { db } from "@/lib/db";
 import { chats, messages as _messages } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-
+ 
 export const runtime = "edge";
-
+ 
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(config);
-
+ 
 export async function POST(req: Request) {
   try {
     const { messages, chatId } = await req.json();
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     const fileKey = _chats[0].fileKey;
     const lastMessage = messages[messages.length - 1];
     const context = await getContext(lastMessage.content, fileKey);
-
+ 
     const prompt = {
       role: "system",
       content: `AI assistant is a brand new, powerful, human-like artificial intelligence.
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       AI assistant will not invent anything that is not drawn directly from the context.
       `,
     };
-
+ 
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
